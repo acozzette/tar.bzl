@@ -66,7 +66,7 @@
         if (groupname != "") ownership_attrs = ownership_attrs " gname=" groupname
 
         # First ensure parent directories exist
-        if (!($0 ~ /type=dir/)) {
+        if (!package_dir_dirs_emitted) {
             split(package_dir, dirs, "/")
             path = ""
             for (i = 1; i <= length(dirs); i++) {
@@ -75,12 +75,9 @@
                 } else {
                     path = path "/" dirs[i]
                 }
-                # Only print if we haven't seen this directory before
-                if (!(path in seen_dirs)) {
-                    print path " type=dir mode=0755 time=" default_time ownership_attrs
-                    seen_dirs[path] = 1
-                }
+                print path " type=dir mode=0755 time=" default_time ownership_attrs
             }
+            package_dir_dirs_emitted = 1
         }
         sub(/^/, package_dir "/")
     }
